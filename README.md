@@ -42,23 +42,11 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - MultiProcessing is used for SiPMs (each SiPM is independent and will be calculated in parallel)
 - Utility/constants.py has the physical constants and user can config them.
 ### Commands
-    '--steps': Number of simulation steps, default is 5.
-    '--start_tof': Starting time of flight for SiPM Array
-    '--step_res': Resolution of simulation steps
-    '--Tmod': Laser Period, determines also ToF Range.
-    '--NIter': How many iteration to simulate, leave 0 for full simulation
-    '-dbg_log': Do you need to see debug logs? then specify a filename.
-    '--nbins': Number of bins for histogram, only when plot is needed, for .mat file, full resolution will be saved.
-    '--mt': Multi-Processing or Serial, use 2 for multi-core, use 0 for serial in case of debugging.
-    '--sv': Plot (1) or Save mat(2)
-    '--outfolder': Where to save the simulator outputs
-    '--lambda_bg': Background photon rate in Millions of Photons per Second (MPh/s)
-    '--Windowing': How many iterations should be used for the initial phase of the time-focusing algorithm 
-    '--WindowTaps': The number of tops to use if the time-focusing algorithm is called
-    '--alg': Algorithm to use, either `time-focusing` or `partial-hist`
+   Please refer to .YAML File for the list of available options
 ## Usage
+    'python montesim.py config -f path/to/config/file.yaml -o /path/to/save/outputs'
 ### Prequisites 
-- python3.7
+- python3.8
 - numpy
 - multiprocessing
 - logging 
