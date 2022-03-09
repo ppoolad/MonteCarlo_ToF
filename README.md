@@ -44,7 +44,7 @@ Two different high-level algorithmic approaches are currently implemented. The m
 ### Commands
    Please refer to .YAML File for the list of available options
 ## Usage
-    'python montesim.py config -f path/to/config/file.yaml -o /path/to/save/outputs'
+    `python montesim.py config -f path/to/config/file.yaml -o /path/to/save/outputs`
 ### Prequisites 
 - python3.8
 - numpy
