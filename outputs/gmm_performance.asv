@@ -1,0 +1,29 @@
+%diff_array_init
+%diff_array = zeros(2,5*3);
+%conf_array = zeros(2,5*3);
+init = 0;
+init_t = 10e-9;
+sim_res = 10e-12;
+for i=1:1:5
+    pix_name = sprintf("pixel%d",i-1);
+    gx = eval(pix_name+"_mu_convergance(end,:)");
+    gmm_mus = eval(pix_name+"_mu_convergance(end,:)");
+    gmm_pix = eval(pix_name+"_pi_convergance(end,:)");
+    gmm_sigs = eval(pix_name+"_sig_convergance(end,:)");
+    golden_mu = (init_t + 20e-9*(i-1))/sim_res;
+    golden_mu2 = golden_mu + (20e-9)/sim_res;
+    diff = abs(gmm_mus-golden_mu);
+    diff2 = abs(golden_mu2 - gmm_mus);
+    metric = gmm_pix * gmm*sigs;
+    [out, index] = sort(metric)
+    [minimum_distance, min_idx] = min(diff);
+    [minimum_distance2, min_idx2] = min(diff2);
+    min_pi = gmm_pix(min_idx);
+    min_sig = gmm_sigs(min_idx);
+    min_sig2 = gmm_sigs(min_idx2);
+    diff_array(1,i+init) = minimum_distance;
+    conf_array(1,i+init) = min_sig;
+    diff_array(2,i+init) = minimum_distance2;
+    conf_array(2,i+init) = min_sig2;
+end
+

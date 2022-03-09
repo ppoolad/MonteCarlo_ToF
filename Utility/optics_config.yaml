@@ -1,0 +1,29 @@
+---
+
+  #Optical elements
+  Lens:
+    Lens_D: 5e-3 #m
+    Lens_f: 6e-3 #m
+    Lens_t: 0.90
+    filter_fwhm: 5e-9 #m
+    filter_t: 0.66
+    filter_fc: 940e-9 #m
+
+  #emitter
+  Laser:
+    Laser_Pmax: 10 #watt
+    WaveLength: 940e-9
+    Beam_Div_h: 1.75 #degree
+    Beam_Div_v: 1.75
+    Beam_Shape: square
+    Laser_pulse_length: 1e-9
+  #Sensor
+  Sensor:
+    Sensor_FF: 0.265
+    Sensor_pdp: 0.25
+    Pixel_A: 3600e-12
+
+  Solar:
+    constant_rate: -1
+    path_to_irradiance: ./Data/astmg173.xlsx
+    sun_angle: direct

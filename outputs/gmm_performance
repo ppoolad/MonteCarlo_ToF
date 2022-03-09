@@ -1,0 +1,8 @@
+gmm_mus = pixel0_mu_convergance(end,:);
+gmm_pix = pixel0_pi_convergance(end,:);
+gmm_sigs = pixel0_sig_convergance(end,:);
+golden_mu = 4.10e4
+diff = gmm_mus-golden_mu;
+[minimum_distance, min_idx] = min(diff);
+min_pi = gmm_pix(min_idx);
+min_sig = gmm_sigs(min_idx);

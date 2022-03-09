@@ -1,0 +1,66 @@
+# This is a test configuration file for developing the montesim config handling
+
+--- # start of file
+  System:
+    Device:       'cpu'
+    alg:          'partial-hist'  # which algorithm to use
+    phr_iter:     1 #1 means full histogram, 2,3,... is partial histogramming (zooms in 2,3,.. steps)
+    Post_Process_Alg: 'All' #all will give you an IIR averging as well. 
+
+    steps:        5 # number of TOF distances to simulate AKA SPAD_per_TDC
+    start_tof:    100 # which TOF distance to start at (ns)
+    step_res:     20e-9 # step increment for TOF distances to simulate (s)
+    Tmod:         200e-9 # Total histogram period (s), also determines distance. 333 ~= 100 m
+    gate_start:   0 #If you want to look at a certain range
+    gate_end:     200e-9
+    NIter:        10000 # Number of iterations to simulate #0 will be full sim: decided according to frame_per_second and t_mod.
+    #dbg_log:      'debug.log' # Location to put default log, default ''
+    dbg_log:      ''
+    nbins:        2048 # 11-bit TDC-ish, equivalent
+    mt:           2 # Multi-threading 0 does everythin serially
+    outfolder:    'outputs/' # output directory
+    coincidence:  '4/32' # coincidence factor (n event/ total spads per sipm)
+    CD_Window:    2e-9 # coincidence Window
+    first_only:   True # whether to simulate only the first photon arrival (most setups)
+    SPAD_recharge: True #Should SPAD recharge after finding an event?
+    object_reflectivity: 0.80
+    frames_per_second: 20
+    sim_res:      10e-12
+    tdc_sigma:    10e-12
+    n_tdc_per_cluster: 2
+    tdc_dead_time: 10e-9
+    ToF_Echo: 1 #support for multiple peaks, set 0 for single peak
+    echo_split: [0.6, 0.4] #split between primary and secondary
+    secondary_step: 20e-9
+
+  #Optical elements
+  Lens:
+    Lens_D: 10e-3 #m
+    Lens_f: 10e-3 #m
+    Lens_t: 0.90
+    filter_fwhm: 5e-9 #m
+    filter_t: 0.8
+    filter_fc: 940e-9 #m
+
+  #emitter
+  Laser:
+    Laser_Pmax: 100 #watt
+    WaveLength: 940e-9
+    Beam_Div_h: 1 #degree
+    Beam_Div_v: 1
+    Beam_Shape: square
+    Laser_pulse_length: 2e-9
+  #Sensor
+  Sensor:
+    Sensor_FF: 1
+    Sensor_pdp: 0.05
+    Pixel_A: 400e-12
+    Spad_sigma: 30e-12
+    SPAD_deadtime: 10e-9
+    SPAD_DCR: 30000
+  Solar:
+    constant_rate: 0
+    weather_factor: 10
+    path_to_irradiance: ./Data/astmg173.xls
+    sun_angle: direct
+... # end of file
