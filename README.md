@@ -59,7 +59,7 @@ Various simulator constants can be changed by modifying `Utility/constants.py`. 
 
 #### Config File Config
 
- `python montesim.py config -f <filename>` 
+ python montesim.py config -f <filename>
  
  Would call the simulator and specify that a config file should be used. When a config file is used, the `-f` or `--filename` parameter should be passed to the simulator, rather than the commands specified in the [Commands](#commands) section. In this case, the argument following `-f` should be a path to the `.yaml` config file containing all the same arguments as in [Commands](#commands). 
 
