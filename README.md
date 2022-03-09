@@ -11,8 +11,6 @@ This is a numeric simulator to simulate behavior of SPAD arrays used for ToF mea
     - [Prequisites](#prequisites)
     - [Run](#run)
       - [Config File Config](#config-file-config)
-      - [Command Line Config](#command-line-config)
-
 
 
 ## Setup
@@ -25,6 +23,11 @@ Here an ASCII schematic of the circuit can be seen.
     | SPAD3 | SPADn|               |
     |:------------:|:-------------:|
     |      ...     |     SiPM3     |
+                   |
+                   |
+    ________________________________
+    |            TDC Bank          |
+    |______________________________|
 
 ## Methodology
 1. Photon rate (lambda) for all the arrays will be calculated before hand as: lambda_sum(t) = lambda_bg + lambda_sig(t)
@@ -36,26 +39,16 @@ Here an ASCII schematic of the circuit can be seen.
 7. A histogram will be generated for each Macro-Pixel. User can save as .mat file or plot it.
 
 ## Algorithms
-Two different high-level algorithmic approaches are currently implemented. The main `montesim.py` file can call both algorithms by passing the `--alg` parameter on the command line. Passing `time-focusing` or `partial-hist` runs either the time focusing algorithm or partial histogram algorithm, respectively. Future updates will work on increasing the number of parameters that can be changed from the command line.
-
+Two different high-level algorithmic approaches are currently implemented. The main `montesim.py` file can call both algorithms by passing the `algorithm` parameter oin the config.yaml file.Passing `partial-hist` runs the partial histogram algorithm and IIR filtering. 
 ## Features
 - MultiProcessing is used for SiPMs (each SiPM is independent and will be calculated in parallel)
 - Utility/constants.py has the physical constants and user can config them.
 ### Commands
-    '--steps': Number of simulation steps, default is 5.
-    '--start_tof': Starting time of flight for SiPM Array
-    '--step_res': Resolution of simulation steps
-    '--Tmod': Laser Period, determines also ToF Range.
-    '--NIter': How many iteration to simulate, leave 0 for full simulation
-    '-dbg_log': Do you need to see debug logs? then specify a filename.
-    '--nbins': Number of bins for histogram, only when plot is needed, for .mat file, full resolution will be saved.
-    '--mt': Multi-Processing or Serial, use 2 for multi-core, use 0 for serial in case of debugging.
-    '--sv': Plot (1) or Save mat(2)
-    '--outfolder': Where to save the simulator outputs
-    '--lambda_bg': Background photon rate in Millions of Photons per Second (MPh/s)
-    '--Windowing': How many iterations should be used for the initial phase of the time-focusing algorithm 
-    '--WindowTaps': The number of tops to use if the time-focusing algorithm is called
-    '--alg': Algorithm to use, either `time-focusing` or `partial-hist`
+  `config -f path/to/config.yaml` sets the address to config file
+  Please see `config/configs.yaml` for total configuration commans
+
+  `-o path/to/output` sets path that the outputs should be saved
+
 ## Usage
 ### Prequisites 
 - python3.7
@@ -67,17 +60,9 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - tdqm
 ### Run
 
-Various simulator constants can be changed by modifying `Utility/constants.py`. Outside of these constants, the simulator [commands](#commands) can be passed to the simulator in two different ways. Arguments can be passed in via the command line, or through a `.yaml` configuration file. To select one of these two options, the simulator needs to be called with either `config` or `cmdline`. 
-
+Various simulator constants can be changed by modifying `Utility/constants.py`. Outside of these constants, the simulator [commands](#commands) can be passed to the simulator through a `.yaml` configuration file.
 #### Config File Config
 
  `python montesim.py config -f <filename>` 
  
  Would call the simulator and specify that a config file should be used. When a config file is used, the `-f` or `--filename` parameter should be passed to the simulator, rather than the commands specified in the [Commands](#commands) section. In this case, the argument following `-f` should be a path to the `.yaml` config file containing all the same arguments as in [Commands](#commands). 
-
-#### Command Line Config
-
-`python3.7 montesim.py cmdline --NIter 1000 --mt 2 --sv 2`
-
-Would call the simulator, specify that command line configuration commands should be used, and parse the relevant config options. If an argument is *not* specified, then the simulator will assume some default parameters. Be aware of these defaults when running your simulation. 
-    
