@@ -44,14 +44,11 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - MultiProcessing is used for SiPMs (each SiPM is independent and will be calculated in parallel)
 - Utility/constants.py has the physical constants and user can config them.
 ### Commands
-  `config -f path/to/config.yaml` sets the address to config file
-  Please see `config/configs.yaml` for total configuration commans
-
-  `-o path/to/output` sets path that the outputs should be saved
-
+   Please refer to .YAML File for the list of available options
 ## Usage
+  `python montesim.py config -f path/to/config/file.yaml -o /path/to/save/outputs`
 ### Prequisites 
-- python3.7
+- python3.8
 - numpy
 - multiprocessing
 - logging 
@@ -63,6 +60,6 @@ Two different high-level algorithmic approaches are currently implemented. The m
 Various simulator constants can be changed by modifying `Utility/constants.py`. Outside of these constants, the simulator [commands](#commands) can be passed to the simulator through a `.yaml` configuration file.
 #### Config File Config
 
- `python montesim.py config -f <filename>` 
+ python montesim.py config -f <filename>
  
  Would call the simulator and specify that a config file should be used. When a config file is used, the `-f` or `--filename` parameter should be passed to the simulator, rather than the commands specified in the [Commands](#commands) section. In this case, the argument following `-f` should be a path to the `.yaml` config file containing all the same arguments as in [Commands](#commands). 
