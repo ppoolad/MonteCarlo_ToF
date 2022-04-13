@@ -11,8 +11,9 @@ gamma_full = conv(1-exp(-lambda_t), cd_w).*sim_res;
 prob_det = gamma_full(1:length(lambda_t));
 p_det = lambda_t.*sim_res;
 p_cd = zeros(size(lambda_t));
+bino = binomial(n_spad_per_pix-1,c_f-1, prob_det);
 for i=1:length(lambda_t)
-    p_cd(i) =  binomial(n_spad_per_pix-1,c_f-1, prob_det(i)) .* (1-p_det(i)).^(n_spad_per_pix-(c_f-1));
+    p_cd(i) =  bino(i) .* (1-p_det(i)).^(n_spad_per_pix-(c_f-1));
     if p_cd(i) < 1e-140
         p_cd(i) = 0;
     end
