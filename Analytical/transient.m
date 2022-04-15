@@ -1,11 +1,11 @@
 function p_det_cut = transient(lambda_t,t_dead,sim_res)
 T_dead = t_dead / sim_res; 
 lambda_t_twice = [lambda_t, lambda_t, lambda_t, lambda_t];
-p_0 = 1 - exp(-lambda_t_twice(1) .* sim_res);
+p_0 = -lambda_t_twice(1) .* sim_res;
 p_det = zeros(size(lambda_t_twice));
 p_det(1) = p_0;
 for i = 1:length(lambda_t_twice)
-    p_ev = 1 - exp(-lambda_t_twice(i) .* sim_res);
+    p_ev = lambda_t_twice(i) .* sim_res;
     %dead_window = ones(1,uint16(T_dead));
     p_dead_window = sum(p_det(max(1,i-uint32(T_dead)):i)); %conv(P_ev,dead_window) .* sim_res;
     p_no_ev = 1 - p_dead_window;

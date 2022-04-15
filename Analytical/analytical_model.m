@@ -18,10 +18,8 @@ function final_pdf = analytical_model(lambda_t, system,transient_active)
     end
 
     %% Apply deadtime effect for SPADS
-    % Deadtime in Non-paralyzable system affects the mean arrival rate:
-    % lambda_out/lambda_in = 1/(1+lambda_in*t_dd)
-    %r_t_dd =  r_t ./ ( 1 + r_t .* spad_dead);
-    %transient:
+
+    %transient: dead time
     if(transient_active)
         r_t_dd = transient(r_t,spad_dead,sim_res)/sim_res;
     else
@@ -32,9 +30,12 @@ function final_pdf = analytical_model(lambda_t, system,transient_active)
     c_f = system.c_f;
     c_t = system.c_t;
     if(c_f > 1)
+        
         f_c_t = coincidence_detection(r_t_dd, c_f, c_t, n_spad, sim_res); %analytical_lidar(r_t_dd, c_f, c_t, n_spad, sim_res,adjust_factor);    
+        %an older less accurate model 
+        %f_c_t = analytical_lidar(r_t_dd, c_f, c_t, n_spad, sim_res,1); <-  
     else
-        f_c_t = r_t_dd;
+        f_c_t = n_spad .* r_t_dd;
     end
     %% Apply deadtime effect for TDC
     if(tdc_dead > sim_res)
