@@ -15,7 +15,6 @@ Utility/__pycache__/*
 envt
 outlogs
 dbgvenv
-*.mat
 *.out
 *.whl
 core.*
