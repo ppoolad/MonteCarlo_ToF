@@ -9,6 +9,8 @@ Montecarlo Simulator
 import argparse
 import numpy as np
 import logging
+
+import scipy
 from Utility.constants import constants
 from Utility.sipm import SiPM
 from Utility.coincidence_detector import CD
@@ -64,6 +66,14 @@ def simulate(const, NN, nbins, mt, sv, outstr, alg, pos=0, windowMode=0, windowT
         for echo in range(const.tof_echo):
             #secondary ones
             lambda_sum_org[idx,echo+1,:] = optics.create_gamma_t_envelope(lambda_sig_max_secondary[echo][idx], time_steps, tofs + (echo+1)*const.secondary_step, optics._Laser.laser_sigma) #for the reflections if any
+
+        #Save the lambdas in a mat file to use in analitycal model later.
+    matDict = {}
+    for idx, tofs in enumerate(mu):
+        matDict['pixel{}_alambdas{}'.format(
+                    idx, int(tofs*1e9))] = lambda_sum_org[idx] + lambda_bg
+    scipy.io.savemat('./{}/lambdas_strt{}_stp{}.mat'
+                        .format(outstr, int(mu[0]*1e9), int(1e9*mu[-1])), matDict)
 
         #now if we store it somewhere we won't need to copy it in event generator
         #UNCOMMENT HERE IF YOUR WANT TO SEE THE LAMBDA
