@@ -1,0 +1,74 @@
+# This is a test configuration file for developing the montesim config handling
+
+--- # start of file
+  System:
+    Device:       'torchGPU'
+    alg:          'partial-hist'  # which algorithm to use
+    # EMKernels:    4
+    # EMBatch:      800
+    # EMIter:       100000
+    phr_iter:     1
+    #alg:        'time-focusing'
+    Post_Process_Alg: 'All'
+    Tap_order:  'dec' #incremental (inc) vs decremental(dec) taps
+    steps:        5 # number of TOF distances to simulate AKA SPAD_per_TDC
+    start_tof:    100 # which TOF distance to start at (ns)
+    step_res:     100e-9 # step increment for TOF distances to simulate (s)
+    Tmod:         2000e-9 # Total histogram period (s), also determines distance. 333 ~= 100 m 1000n ~ 1u = 1MHz
+    gate_start:   0
+    gate_end:     2000e-9
+    NIter:        1000 # Number of iterations to simulate
+    #dbg_log:      'debug.log' # Location to put default log, default ''
+    dbg_log:      ''
+    nbins:        2048 # 9-bit TDC-ish, equivalent
+    mt:           2 # Multi-threading
+    sv:           2 # whether to plot or save to .mat
+    outfolder:    'outputs/EMISCAS' # output directory
+    coincidence:  '2/8' # coincidence factor
+    CD_Window:    3e-9 # coincidence Window
+    #lambda_bg:    100 # background rate in million ph/s
+    Windowing:    5000 # how many iterations to use for windowing
+    WindowTaps:   16 # how many windows to create
+    first_only:   True # whether to simulate only the first photon arrival (most setups)
+    SPAD_recharge: True #Should SPAD recharge after finding an event?
+    object_reflectivity: 0.10
+    frames_per_second: 20
+    sim_res:      10e-12
+    tdc_sigma:    10e-12
+    n_tdc_per_cluster: 10
+    tdc_dead_time: 10e-12
+    ToF_Echo: 1 #support for multiple peaks, set 0 for single peak
+    echo_split: [1.0, 0.0] #split between primary and secondary
+    secondary_step: 1e-9
+
+  #Optical elements
+  Lens:
+    Lens_D: 6e-3 #m
+    Lens_f: 6e-3 #m
+    Lens_t: 0.50
+    filter_fwhm: 10e-9 #m
+    filter_t: 0.50
+    filter_fc: 905e-9 #m
+
+  #emitter
+  Laser:
+    Laser_Pmax: 140 #watt
+    WaveLength: 905e-9
+    Beam_Div_h: 0.05 #degree
+    Beam_Div_v: 0.05
+    Beam_Shape: square
+    Laser_pulse_length: 3e-9
+  #Sensor
+  Sensor:
+    Sensor_FF: 0.6
+    Sensor_pdp: 0.027
+    Pixel_A: 1600e-12
+    Spad_sigma: 30e-12
+    SPAD_deadtime: 5e-9
+    SPAD_DCR: 30000
+  Solar:
+    constant_rate: 0
+    weather_factor: 10
+    path_to_irradiance: ./Data/astmg173.xls
+    sun_angle: direct
+... # end of file
