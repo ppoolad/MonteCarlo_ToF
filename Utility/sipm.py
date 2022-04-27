@@ -106,7 +106,14 @@ def spad_wise(shared_macro_pix, const, lambda_bg, lambda_sum, SiPM_array, CD_arr
     logger.debug(
         '-------------MACRO PIXEL {}---------------'.format(shared_macro_pix))
 
-    event_ar_t, event_ar_spad = ev.rnd_gen_vect_dotile(lambda_bg, lambda_sum, const.n_spads_per_pix, const.sim_res, const.tof_echo, const.echo_split)
+    #if torch gpu is selected
+    if const.device == 'torchGPU':
+        #print("torch")
+        event_ar_t, event_ar_spad = ev.pytorch_generator(lambda_bg, lambda_sum, const.n_spads_per_pix, const.sim_res, const.tof_echo, const.echo_split)
+    
+    #if cpu is selected
+    else:
+        event_ar_t, event_ar_spad = ev.rnd_gen_vect_dotile(lambda_bg, lambda_sum, const.n_spads_per_pix, const.sim_res, const.tof_echo, const.echo_split)
 
     #Validate against deadtime
     all_ar_valid_t, all_ar_valid_spad, nxt_spad_avail, nxt_spad_free_times = SiPM_array.all_arrival_valid_checker_list(

@@ -187,6 +187,7 @@ def run_algorithm(PHR, N, const, lambda_bg, lambda_sum, sipm_arr, cd_arr, first_
             if n == 0:#!why?
                 continue
 
+            #update tdc block deadtime
             tdc_a.tdc_dead_checker(_all_cd_t, const, postProcModule,time_res=tdc_window_res)
 
             # update TDC deadtime
