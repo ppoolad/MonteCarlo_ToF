@@ -114,6 +114,16 @@ class Lens:
         self.Filter_fwhm = config['filter_fwhm']
         self.Filter_fc = config['filter_fc']
 
+        # if only fov and aperture were given
+        try:
+            self.a_scene_only = config['a_scene_only']
+            self.fov_h = config['fov_h']
+            self.fov_v = config['fov_v']
+            self.aperture = config['aperture']
+            self.n_pix = config['npix']
+        except:
+            self.a_scene_only = False
+
     def LambertianFactor(self,Distance_vector):
         sin2alpha = self.Diameter**2 / (self.Diameter**2 + 4 * Distance_vector**2)
         return sin2alpha
@@ -136,6 +146,10 @@ class Lens:
         self.irradiance = np.sum( phpspnm_dlambda[1:]/e_photon * e_f_dlambda) #ph/s/m2
         return self.irradiance
 
+    def a_scene(self, ):
+        a_scene_d2 = 4  * np.tan(self.fov_h * np.pi / 180 /2) * np.tan(self.fov_v * np.pi / 180 /2) / self.n_pix
+        return a_scene_d2
+
 
 class Optic_system:
     def __init__(self,configFile):
@@ -149,12 +163,16 @@ class Optic_system:
         self.Plank = const.Planck
         self.C = const.c
         
+    
 
     def calculateLaserRefPower(self,distance_vector,reflectivity):
         #Calculate Power Envelope
         ref_Pmax = self._Laser.calculatePeakPowerReflected(reflectivity,distance_vector)
         lens_factor = self._Lens.LensOutput(distance_vector)
-        P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Sensor.Area / (self._Lens.Focal**2)
+        if(self._Lens.a_scene_only == False):
+            P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Sensor.Area / (self._Lens.Focal**2)
+        else:
+             P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Lens.a_scene()
         return P_pix_sig
 
     '''
@@ -163,7 +181,10 @@ class Optic_system:
 
     def calculateEnvRefPower(self):
         P_sol = self._Lens.LensOutputFiltered(self._solar.wavelengths,self._solar.target_irradiance) * self._Lens.Lens_transmittance
-        P_pix_env = P_sol * self._Sensor.FF * self._Sensor.Area * self._Sensor.PDP * self._Lens.Diameter**2 / (4* self._Lens.Focal**2) #this is an approx refer to diaries for complete 
+        if(self._Lens.a_scene_only == False):
+            P_pix_env = P_sol * self._Sensor.FF * self._Sensor.Area * self._Sensor.PDP * self._Lens.Diameter**2 / (4* self._Lens.Focal**2) #this is an approx refer to diaries for complete 
+        else:
+            P_pix_env = P_sol * self._Sensor.FF * self._Sensor.PDP * self._Lens.Diameter**2 / 4 * self._Lens.a_scene()
         return P_pix_env
 
     def calculate_lambda_bg(self):

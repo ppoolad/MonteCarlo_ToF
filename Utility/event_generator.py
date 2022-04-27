@@ -10,17 +10,58 @@ try:
     import numpy as np
     import numpy.random as rnd
     #import matplotlib.pyplot as plt
+    from numba import jit,cuda
+    from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float32
+
 except ModuleNotFoundError: # means you're probably trying to run partial_hist test code on its own
     import os
     import sys
     sys.path.append(os.path.abspath('..'))  # add directory above to path
     import numpy as np
     import numpy.random as rnd
-
+    #import matplotlib.pyplot as plt
+    from numba import jit,cuda
+    from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float32
 from pdb import set_trace; 
 
+import torch
+import cupy as cp
 # #@torch.no_grad()
 # @torch.jit.script
+
+def pytorch_generator(lambda_bg, lambda_sum, n_spad, sim_res, tof_echo, echo_split):
+    #defualts to gpu 1// you might want to change this
+    torch.cuda.set_device('cuda:0')
+    torch.no_grad()
+    cuda1 = torch.device('cuda:0')
+
+    #copy to gpu
+    signal_lambdax = torch.tensor(lambda_sum[0],device=cuda1,dtype=float)
+    
+    #calculate the summation on gpu
+    signal_lambda = (signal_lambdax + lambda_bg) * sim_res
+    
+    #secondary reflections
+    signal_lambda_secx = torch.tensor(lambda_sum[1], device=cuda1,dtype=float)
+    signal_lambda_sec = (signal_lambda_secx + lambda_bg) * sim_res
+    n_spad_per_sipm = n_spad
+    if tof_echo:
+        lambda_sum_org = torch.zeros([ len(signal_lambda), n_spad_per_sipm], device=cuda1)
+        split_spad = np.rint(np.array(echo_split) * n_spad_per_sipm).astype(int)
+        #TODO: Only 2 Echo supported here for now #
+        lambda_sum_org[:,0:split_spad[0]] = torch.tile(signal_lambda.reshape(signal_lambda.size()[0],1),[1,split_spad[0]])
+        lambda_sum_org[:,split_spad[0]:split_spad[0]+split_spad[1]] = torch.tile(signal_lambda_sec.reshape(signal_lambda_sec.size()[0],1),[1,split_spad[1]])
+
+    else:
+        lambda_sum_org = torch.tile((lambda_bg + signal_lambda) * sim_res,[n_spad_per_sipm,1], device=cuda1)
+
+    #generate random numbers    
+    rnd_list = torch.rand(lambda_sum_org.shape, device=cuda1) #torch.cuda.FloatTensor(lambda_sum_org.shape).uniform_()
+    
+    #get the event list
+    ev_list = torch.where(rnd_list < lambda_sum_org)
+    times, spads = ev_list[0].cpu().numpy(), ev_list[1].cpu().numpy()
+    return (times, spads)
 
 def rnd_gen_vect_random(p_tile):
     p_tile = p_tile
