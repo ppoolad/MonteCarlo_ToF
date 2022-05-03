@@ -25,6 +25,8 @@
     sv:           2 # whether to plot or save to .mat
     outfolder:    'outputs/EMISCAS' # output directory
     coincidence:  '16/133' # coincidence factor
+    coincidence_auto_reset: False #should CD block get reset after a hit? (Making this true would prohibit overlapping)
+  
     CD_Window:    3e-9 # coincidence Window
     #lambda_bg:    100 # background rate in million ph/s
     Windowing:    5000 # how many iterations to use for windowing

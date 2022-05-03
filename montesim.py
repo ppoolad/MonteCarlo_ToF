@@ -96,7 +96,7 @@ def simulate(const, NN, nbins, mt, sv, outstr, alg, pos=0, windowMode=0, windowT
 
     #Coincidence Detector Module Object
     #Each SIPM need a CD module
-    CD_array = [CD(const.CD_Factor,const.cd_wdist,const.n_spads_per_pix)
+    CD_array = [CD(const.CD_Factor,const.cd_wdist,const.n_spads_per_pix, const.overlapping_cd)
                 for _ in range(const.n_spad_per_tdc)]
 
     if NN == 0:
@@ -127,8 +127,15 @@ def main(alg, n_steps=5, start=10, step_res=1e-8, Tmod=50e-9, N=1000, DBG='', nb
     myconst.outstr = outstr
     print('to be tested: ', tof_steps)
     myconst.print_constants()
-    simulate(myconst, N, nbins, mt, sv, outstr, alg,
+    if(myconst.nTrial == 1):
+        simulate(myconst, N, nbins, mt, sv, outstr, alg,
                 windowMode=WinMode, windowTaps=WinTaps,config_file=config_file)
+    else:
+        for ntrial in range(myconst.nTrial):
+            simulate(myconst, N, nbins, mt, sv, outstr, alg,
+                windowMode=WinMode, windowTaps=WinTaps,config_file=config_file)
+            print('Finished Trial {}/{}'.format(ntrial+1, myconst.nTrial))
+            myconst.trial_number += 1
 
 
 if __name__ == '__main__':

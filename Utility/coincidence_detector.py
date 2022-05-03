@@ -8,8 +8,8 @@ class CD:
     cd_factor = property(lambda self: self._cd_factor, lambda self, val: setattr(self, '_cd_factor', val))
     cd_n_spad = property(lambda self: self._cd_n_spad, lambda self, val: setattr(self, '_cd_n_spad', val))
     cd_window = property(lambda self: self._cd_window, lambda self, val: setattr(self, '_cd_window', val)) #CD Window is actually window in sec/sim_res ?
-
-    def __init__(self, cd_factor, cd_window,cd_n_spad):
+    auto_reset = property(lambda self: self._reset_after_hit, lambda self, val: setattr(self, '_reset_after_hit', val))
+    def __init__(self, cd_factor, cd_window,cd_n_spad,reset_after_hit=False):
         ''' Coincidence detector class
         Args:
             cd_factor (int): threshold for coincidence detection
@@ -22,6 +22,7 @@ class CD:
         self._cd_factor = cd_factor
         self._cd_window = cd_window
         self._cd_n_spad = cd_n_spad
+        self.auto_reset = reset_after_hit
 
     def coincidence_checker(self, arrival_times, arrival_spads, all_events=True):
         ''' Check for valid coincidence in the provided array of times and SPADs
@@ -92,6 +93,11 @@ class CD:
                     #for now we ignore it, we can use them to increase our confidence though
                 arrival_cd.append(time) # returns last time
                 spad_cd.append(spad) # returns last SPAD
+                #if autoreset is active then reset it
+                if(self.auto_reset):
+                    time_w.clear()
+                    spad_w.clear()
+                    len_list = 0
             
             if all_events == False and len(arrival_cd) > 0:
                 # exit out early because we only want the first event

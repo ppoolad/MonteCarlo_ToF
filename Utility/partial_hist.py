@@ -228,7 +228,7 @@ def run_algorithm(PHR, N, const, lambda_bg, lambda_sum, sipm_arr, cd_arr, first_
     time_steps = np.linspace(0, const.T-const.sim_res,
                              num=int(const.T//const.sim_res)) 
     #let's save the histogram
-    postProcModule.save_output(const.t_tof, time_steps, const.outstr, 0, N, const.systemConfig, secondary_offset = const.secondary_step)
+    postProcModule.save_output(const.t_tof, time_steps, const.outstr, 0, N, const.systemConfig, secondary_offset = const.secondary_step,save = const.save_figures ,trial = const.trial_number)
 
 
     return SiPM_hists_a #, SiPM_hists_f, SiPM_hists_fncd

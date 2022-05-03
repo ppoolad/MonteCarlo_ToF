@@ -4,18 +4,12 @@ import logging
 import scipy.io as sio 
 from shutil import copyfile as cp
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-import random as rnd
-from scipy.stats import norm
-from scipy.special import logsumexp
 logger = logging.getLogger(__name__)
-import warnings
-from sklearn.exceptions import ConvergenceWarning
 import itertools
-from Utility.constants import FixedPointNumber as FPN
-from textwrap import wrap
+from Utility.constants import FixedPointNumber as FPN, constants
+import Utility.constants
 #I know they might not
-warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
+#warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
 
 class PostProcess:
     algorithm = property(lambda self: self.__alg, lambda self, val: self.__set_alg(val))
@@ -107,7 +101,7 @@ class PostProcess:
             self.update_histogram(arrival_pixel_out, arrival_time_out,time_res)
             self.iir_filter(arrival_pixel_out, arrival_time_out, time_res)
 
-    def save_output(self, tof_list, time_steps, outstr, isipy, NN, config_file, nbins=100, secondary_offset=10e-9, figformat='png'):
+    def save_output(self, tof_list, time_steps, outstr, isipy, NN, config_file, nbins=100, secondary_offset=10e-9, figformat='png',save=True,trial=0):
         if self.algorithm == 'Histogram':
             matdict = {}
             for nums in range(self.__spad_per_tdc):
@@ -131,35 +125,36 @@ class PostProcess:
                 matdict['pixel{}_all_ar_tof{}'.format(
                     nums, int(tof_list[nums]*1e9))] = self.__hist_mem[nums]
                 matdict[f'pixel{nums}_iir_convergance'] = self.convergence_track[nums]
-                time_line = time_steps #np.linspace(0,self.__tmod,num=nbins)
-                x_line = time_line # * 3e8 / 2 #lightSpeed
-                time_to_dist =  3e8 /2
-                figsize = (3,2)
-                fig, ax = plt.subplots(1,figsize=(6,2))
-                #plt.tight_layout()
-                ax.bar(x_line*time_to_dist, self.__hist_mem[nums],width=self.sim_res*time_to_dist)
-                ax.set_xlabel('Distance (m)',fontsize=12)
-                ax.set_ylabel('Counts',fontsize=12)
+                if(save):
+                    time_line = time_steps #np.linspace(0,self.__tmod,num=nbins)
+                    x_line = time_line # * 3e8 / 2 #lightSpeed
+                    time_to_dist =  3e8 /2
+                    figsize = (3,2)
+                    fig, ax = plt.subplots(1,figsize=(6,2))
+                    #plt.tight_layout()
+                    ax.bar(x_line*time_to_dist, self.__hist_mem[nums],width=self.sim_res*time_to_dist)
+                    ax.set_xlabel('Distance (m)',fontsize=12)
+                    ax.set_ylabel('Counts',fontsize=12)
 
-                plt.suptitle('Histogram', fontsize=14)
-                plt.tight_layout()
-                plt.savefig('./{}/all_ar_tof{}_{}-{}+{}_{}.'.format(outstr,nums,int(tof_list[0]*1e9),int(tof_list[-1]*1e9),figsize[0],figsize[1]) + figformat)
+                    plt.suptitle('Histogram', fontsize=14)
+                    plt.tight_layout()
+                    plt.savefig('./{}/all_ar_tof{}_{}-{}+{}_{}_{}.'.format(outstr,nums,int(tof_list[0]*1e9),int(tof_list[-1]*1e9),figsize[0],figsize[1],trial) + figformat)
 
-                fig2 = plt.figure(figsize=figsize)
-                plt.plot(np.linspace(0,len(self.convergence_track[nums]),len(self.convergence_track[nums])), np.array(self.convergence_track[nums])*self.sim_res*3e8/2)
-                plt.axhline(tof_list[nums] *3e8/2 ,linestyle='--',color='red')
-                plt.axhline((tof_list[nums] + secondary_offset) *3e8/2 ,linestyle='--',color='red')
-                plt.ylabel('Distance (m)', fontsize=12)
-                plt.suptitle('IIR filter convergene in time', fontsize=14)
-                plt.xlabel('Sample', fontsize=12)
-                plt.tight_layout()
-                plt.savefig('./{}/convergeIIR_{}_{}_{}.{}'.format(outstr,nums,figsize[0],figsize[1],figformat))
+                    fig2 = plt.figure(figsize=figsize)
+                    plt.plot(np.linspace(0,len(self.convergence_track[nums]),len(self.convergence_track[nums])), np.array(self.convergence_track[nums])*self.sim_res*3e8/2)
+                    plt.axhline(tof_list[nums] *3e8/2 ,linestyle='--',color='red')
+                    plt.axhline((tof_list[nums] + secondary_offset) *3e8/2 ,linestyle='--',color='red')
+                    plt.ylabel('Distance (m)', fontsize=12)
+                    plt.suptitle('IIR filter convergene in time', fontsize=14)
+                    plt.xlabel('Sample', fontsize=12)
+                    plt.tight_layout()
+                    plt.savefig('./{}/convergeIIR_{}_{}_{}_{}.{}'.format(outstr,nums,figsize[0],figsize[1],trial,figformat))
 
-                if(True):
-                    plt.close(fig)
-                    plt.close(fig2)
-            sio.savemat('./{}/N{}_strt{}_stp{}.mat'
-                        .format(outstr, NN, int(tof_list[0]*1e9), int(1e9*tof_list[-1])), matdict)
+                    if(True):
+                        plt.close(fig)
+                        plt.close(fig2)
+            sio.savemat('./{}/N{}_strt{}_stp{}_{}.mat'
+                        .format(outstr, NN, int(tof_list[0]*1e9), int(1e9*tof_list[-1]), trial), matdict)
             #plot convergence
 
         cp(config_file,f'./{outstr}/configs.yaml')       

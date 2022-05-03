@@ -20,12 +20,12 @@ except ModuleNotFoundError: # means you're probably trying to run partial_hist t
     import numpy as np
     import numpy.random as rnd
     #import matplotlib.pyplot as plt
-    from numba import jit,cuda
-    from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float32
+    #from numba import jit,cuda
+    #from numba.cuda.random import create_xoroshiro128p_states, xoroshiro128p_uniform_float32
 from pdb import set_trace; 
 
 import torch
-import cupy as cp
+#import cupy as cp
 # #@torch.no_grad()
 # @torch.jit.script
 

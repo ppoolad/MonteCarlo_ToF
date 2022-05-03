@@ -20,10 +20,15 @@ class constants:
             self.device = myArgs.System['Device']
         except:
             self.device = 'cpu'
+
+        #should it save png figures?
+        try:
+            self.save_figures = myArgs.System['save_figures']
+        except:
+            self.save_figures = True
         # Setup configurations
         self.c = scipy.constants.c  #Speed of light
         self.T = _T #Total time
-    
         self.t_tof = ttof
         self.dist = self.t_tof*self.c/2
         self.outstr = 'output' #default value
@@ -32,16 +37,18 @@ class constants:
         self.laser_sigma = self.laser_pulse_length / (2*np.sqrt(2*np.log(2)))
         self.reflectivity = myArgs.System['object_reflectivity']
         self.mt = myArgs.System['mt']
-        ######### Laser constant Deprecated here, moved to optics.py ######
-        #self.laser_max_p = 5000e-3 #Watt
-        #self.laser_output_E = self.laser_max_p * self.laser_sigma * np.sqrt(2*np.pi)
-        #self.fov = 10
-        #self.pix_area = (10e-6)**2 #square
-        #self.laser_E = self.reflectivity * (self.laser_output_E /4 / np.pi / self.dist**2 / (np.tan(self.fov * np.pi/180)** 2)) * self.pix_area ##self.reflectivity * (self.P_30cm * (30e-2)**2 / (2*self.dist**2) * self.laser_pulse_length)
-        ####################################################################
+        
         self.rpt_freq = 1/self.T
         self.fps = myArgs.System['frames_per_second'] #Hz
         self.N = int(self.rpt_freq // self.fps)
+        ##How many MonteCarlo Trial?
+        
+        self.trial_number = 0
+        try:
+            self.nTrial = myArgs.System['n_montecarlo_trial']
+        except:
+            self.nTrial = 1
+
         self.t = 0.0 #?
         self.sim_res = myArgs.System['sim_res']
         self.tdc_sigma = myArgs.System['tdc_sigma']
@@ -73,6 +80,7 @@ class constants:
         self.tdc_dd_dist = self.tdc_dead//self.sim_res
         self.CD_Window = myArgs.System['CD_Window'] #CD Stuff will be updated by update_CD method
         self.CD_Factor = myArgs.System['coincidence']
+        self.overlapping_cd = myArgs.System['coincidence_auto_reset']
         self.cd_wdist = self.CD_Window//self.sim_res
         self.first_only = myArgs.System['first_only']
         self.alg = myArgs.System['alg']

@@ -20,6 +20,7 @@
     mt:           2 # Multi-threading 0 does everythin serially
     outfolder:    'outputs/' # output directory #can be defined in command line as well
     coincidence:  '4/32' # coincidence factor (n event/ total spads per sipm)
+    coincidence_auto_reset: False #should CD block get reset after a hit? (Making this true would prohibit overlapping)
     CD_Window:    2e-9 # coincidence Window
     first_only:   True # whether to simulate only the first photon arrival (most setups) True mean false (all arrivals) actually (I made a mistake and have not fixed it in the code)
     SPAD_recharge: True #Should SPAD recharge after finding an event?
