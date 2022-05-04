@@ -170,9 +170,9 @@ class Optic_system:
         ref_Pmax = self._Laser.calculatePeakPowerReflected(reflectivity,distance_vector)
         lens_factor = self._Lens.LensOutput(distance_vector)
         if(self._Lens.a_scene_only == False):
-            P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Sensor.Area / (self._Lens.Focal**2)
+            P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Sensor.Area  * distance_vector**2 / (self._Lens.Focal**2)
         else:
-             P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Lens.a_scene()
+             P_pix_sig = ref_Pmax * lens_factor * self._Sensor.FF * self._Sensor.PDP * self._Lens.a_scene()  * distance_vector**2
         return P_pix_sig
 
     '''

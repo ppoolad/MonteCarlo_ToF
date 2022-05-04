@@ -17,7 +17,7 @@ warning('off','MATLAB:nchoosek:LargeCoefficient')
 sim_res = 10e-12;
 %where to read lambda vector and montecarlo histogram matrix generated from
 %python
-sim_path = "./outputs/milestone/sensl/100k_20it/cd16/";
+sim_path = "../outputs/";
 load(sim_path+"lambdas_strt100_stp500.mat");
 load(sim_path+"N20_strt100_stp500.mat");
 %list of variables:
@@ -32,7 +32,7 @@ SNR_MC = zeros(size(true_tof_list));
 for i=1:length(lambda_name_list)
 
     %read lambda
-    lambda_t = eval(lambda_name_list(i)+"(1,:)");%pixel0_alambdas100(1,:);
+    lambda_t(i,:) = eval(lambda_name_list(i)+"(1,:)");%pixel0_alambdas100(1,:);
     tdc_width = uint32(length(lambda_t)/TDC_bins);
     hist_t = eval(lvar_name_list(i)+"(1,:)");%pixel0_all_ar_tof100(1,:);
     %creat system struct
