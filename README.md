@@ -56,8 +56,8 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - matplotlib
 - tdqm
 ### Run
-First, please create a new python environment (Anaconda is recommended) [link to Anaconda]`https://www.anaconda.com/`
-[How  to create environments] `https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html`
+First, please create a new python environment (Anaconda is recommended) [link to Anaconda](https://www.anaconda.com/)
+[How  to create environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
 
 then run using command:
 python montesim.py config -f <config path> -o <output path>
