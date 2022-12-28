@@ -44,7 +44,7 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - MultiProcessing is used for SiPMs (each SiPM is independent and will be calculated in parallel)
 - Utility/constants.py has the physical constants and user can config them.
 ### Commands
-   Please refer to .YAML File for the list of available options
+   Please refer to .YAML File for the list of available options (inside the ./config folder
 ## Usage
   `python montesim.py config -f path/to/config/file.yaml -o /path/to/save/outputs`
 ### Prequisites 
@@ -56,8 +56,11 @@ Two different high-level algorithmic approaches are currently implemented. The m
 - matplotlib
 - tdqm
 ### Run
+First, please create a new python environment (Anaconda is recommended) [link to Anaconda]`https://www.anaconda.com/`
+[How  to create environments] `https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html`
 
-Various simulator constants can be changed by modifying `Utility/constants.py`. Outside of these constants, the simulator [commands](#commands) can be passed to the simulator through a `.yaml` configuration file.
+then run using command:
+python montesim.py config -f <config path> -o <output path>
 #### Config File Config
 
  python montesim.py config -f <filename>
